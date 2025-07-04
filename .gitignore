@@ -3,6 +3,7 @@
 .vs*/
 bin/
 obj/
+Libs/
 TODO.txt
 .vscode/
 packages.lock.json
