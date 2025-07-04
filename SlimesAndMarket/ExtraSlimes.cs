@@ -1,5 +1,4 @@
-﻿using SRML;
-using SRML.SR;
+﻿using SRML.SR;
 
 namespace SlimesAndMarket;
 
@@ -26,7 +25,7 @@ public static class ExtraSlimes
 
     public static EconomyDirector.ValueMap GetValueMap(Identifiable.Id id)
     {
-        //Everything that can be sold
+        // Everything that can be sold
         foreach (var valueMap in SRSingleton<SceneContext>.Instance.EconomyDirector.baseValueMap)
         {
             // Main.Instance.ConsoleInstance.Log("GetValueMap: " + valueMap.accept.id);
