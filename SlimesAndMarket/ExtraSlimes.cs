@@ -43,7 +43,7 @@ public static class ExtraSlimes
         var (value, saturation) = slimeId switch
         {
             Identifiable.Id.QUICKSILVER_SLIME when plortId == 0 => (200f, 100f),
-            Identifiable.Id.LUCKY_SLIME when plortId == 0 => (250f, 125f),
+            Identifiable.Id.LUCKY_SLIME => (250f, 125f),
             _ when valueMap != null => (valueMap.value, valueMap.fullSaturation),
             _ => throw new Exception($"Could not find sellable plort data for {plortId} for slime {slimeId}")
         };

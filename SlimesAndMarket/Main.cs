@@ -31,8 +31,7 @@ public class Main : ModEntryPoint
             if (SRModLoader.IsModPresent("more_vaccing"))
             {
                 ExtraSlimes.RegisterSlime(Identifiable.Id.GOLD_SLIME, Identifiable.Id.GOLD_PLORT, 10f);
-                ExtraSlimes.RegisterSlime(Identifiable.Id.LUCKY_SLIME, SRModLoader.IsModPresent("dogeiscutLuckyPlorts") && Enum.TryParse<Identifiable.Id>("LUCKY_PLORT", out var plort) ? plort : 0,
-                    50f);
+                ExtraSlimes.RegisterSlime(Identifiable.Id.LUCKY_SLIME, 0, 25f);
             }
         }
         catch (Exception e) // But if an error was found

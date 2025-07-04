@@ -4,5 +4,5 @@
 	"author": "AlchlcDvl, FrostDracony (Former Developer)",
 	"description": "A mod for Slime Rancher that allows you to sell all types of slimes! Credits to KomiksPL (Discord: KomiksPL#3882) for the amazing, original idea!",
 	"version": "1.4.0",
-    "load_after": ["komikspl_quicksilver_rancher", "puresaberslime", "more_vaccing", "dogeiscutLuckyPlorts"]
+    "load_after": ["komikspl_quicksilver_rancher", "puresaberslime", "more_vaccing"]
 }
