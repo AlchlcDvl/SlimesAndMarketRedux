@@ -23,7 +23,7 @@ public class Main : ModEntryPoint
             // Only loading the special slime sales if relevant mods are enabled, because there would be no other way the player would be able to sell them otherwise
 
             if (SRModLoader.IsModPresent("komikspl_quicksilver_rancher"))
-                ExtraSlimes.RegisterSlime(Identifiable.Id.QUICKSILVER_SLIME, Identifiable.Id.QUICKSILVER_PLORT, 5f);
+                ExtraSlimes.RegisterSlime(Identifiable.Id.QUICKSILVER_SLIME, Identifiable.Id.QUICKSILVER_PLORT, 5f, 200f, 100f);
 
             if (SRModLoader.IsModPresent("puresaberslime"))
                 ExtraSlimes.RegisterSlime(Identifiable.Id.SABER_SLIME, Identifiable.Id.SABER_PLORT, 50f);
@@ -31,7 +31,7 @@ public class Main : ModEntryPoint
             if (SRModLoader.IsModPresent("more_vaccing"))
             {
                 ExtraSlimes.RegisterSlime(Identifiable.Id.GOLD_SLIME, Identifiable.Id.GOLD_PLORT, 10f);
-                ExtraSlimes.RegisterSlime(Identifiable.Id.LUCKY_SLIME, 0, 25f);
+                ExtraSlimes.RegisterSlime(Identifiable.Id.LUCKY_SLIME, 0, 25f, 250f, 125f);
             }
         }
         catch (Exception e) // But if an error was found

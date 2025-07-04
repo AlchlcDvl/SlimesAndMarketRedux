@@ -37,13 +37,13 @@ public static class ExtraSlimes
         return null;
     }
 
-    public static void RegisterSlime(Identifiable.Id slimeId, Identifiable.Id plortId, float multiplier = 4f)
+    public static void RegisterSlime(Identifiable.Id slimeId, Identifiable.Id plortId, float multiplier = 4f, float basePrice = 0f, float slimeSaturation = 0f)
     {
         var valueMap = GetValueMap(plortId);
         var (value, saturation) = slimeId switch
         {
-            Identifiable.Id.QUICKSILVER_SLIME when plortId == 0 => (200f, 100f),
-            Identifiable.Id.LUCKY_SLIME => (250f, 125f),
+            Identifiable.Id.QUICKSILVER_SLIME when plortId == 0 => (basePrice, slimeSaturation),
+            Identifiable.Id.LUCKY_SLIME => (basePrice, slimeSaturation),
             _ when valueMap != null => (valueMap.value, valueMap.fullSaturation),
             _ => throw new Exception($"Could not find sellable plort data for {plortId} for slime {slimeId}")
         };
