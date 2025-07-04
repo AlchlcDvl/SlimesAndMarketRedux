@@ -1,10 +1,13 @@
-﻿using SRML;
+﻿using HarmonyLib;
+using SRML;
+using SRML.SR;
 
 namespace SlimesAndMarket;
 
 public class Main : ModEntryPoint
 {
     public static Main Instance { get; private set; }
+    public static List<EconomyDirector.ValueMap> ValuesToPatch;
 
     public override void PreLoad()
     {
@@ -18,6 +21,8 @@ public class Main : ModEntryPoint
 
         try // Try the code there, if some error arises then it calls the "catch" function
         {
+            ValuesToPatch = AccessTools.Field(typeof(PlortRegistry), "valueMapsToPatch").GetValue(null) as List<EconomyDirector.ValueMap>;
+
             ExtraSlimes.VANILLA_SLIMES.ForEach(x => ExtraSlimes.RegisterSlime(x.Item1, x.Item2));
 
             // Only loading the special slime sales if relevant mods are enabled, because there would be no other way the player would be able to sell them otherwise

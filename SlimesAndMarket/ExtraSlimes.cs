@@ -26,11 +26,16 @@ public static class ExtraSlimes
     public static EconomyDirector.ValueMap GetValueMap(Identifiable.Id id)
     {
         // Everything that can be sold
+
         foreach (var valueMap in SRSingleton<SceneContext>.Instance.EconomyDirector.baseValueMap)
         {
-            // Main.Instance.ConsoleInstance.Log("GetValueMap: " + valueMap.accept.id);
+            if (valueMap.accept.id == id)
+                return valueMap;
+        }
 
-            if (id == valueMap.accept.id)
+        foreach (var valueMap in Main.ValuesToPatch)
+        {
+            if (valueMap.accept.id == id)
                 return valueMap;
         }
 
@@ -42,9 +47,9 @@ public static class ExtraSlimes
         var valueMap = GetValueMap(plortId);
         var (value, saturation) = slimeId switch
         {
-            Identifiable.Id.QUICKSILVER_SLIME when plortId == 0 => (basePrice, slimeSaturation),
-            Identifiable.Id.LUCKY_SLIME => (basePrice, slimeSaturation),
             _ when valueMap != null => (valueMap.value, valueMap.fullSaturation),
+            Identifiable.Id.QUICKSILVER_SLIME => (basePrice, slimeSaturation),
+            Identifiable.Id.LUCKY_SLIME => (basePrice, slimeSaturation),
             _ => throw new Exception($"Could not find sellable plort data for {plortId} for slime {slimeId}")
         };
         PlortRegistry.RegisterPlort(slimeId, value * multiplier, saturation);
