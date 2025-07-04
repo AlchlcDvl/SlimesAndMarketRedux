@@ -45,7 +45,8 @@ public static class ExtraSlimes
         {
             Identifiable.Id.QUICKSILVER_SLIME when plortId == 0 => (200f, 100f),
             Identifiable.Id.LUCKY_SLIME when plortId == 0 => (250f, 125f),
-            _ => (valueMap.value, valueMap.fullSaturation)
+            _ when valueMap != null => (valueMap.value, valueMap.fullSaturation),
+            _ => throw new Exception($"Could not find sellable plort data for {plortId} for slime {slimeId}")
         };
         PlortRegistry.RegisterPlort(slimeId, value * multiplier, saturation);
         DroneRegistry.RegisterBasicTarget(slimeId); // And make so that the drones can grab slimes
