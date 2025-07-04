@@ -1,67 +1,30 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BACE57A1-6B45-4151-99FC-FEB18C095CC2}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SlimesAndMarket</RootNamespace>
-    <AssemblyName>SlimesAndMarket</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Libs\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slime Rancher\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
-    </Reference>
-    <Reference Include="LargoLibrary">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\LargoLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="SRML">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SlimeRancher_Data\Managed\SRML.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SlimeRancher_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ExtraSlimes.cs" />
-    <Compile Include="Main.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="modinfo.json" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>SlimesAndMarket</AssemblyName>
+        <RootNamespace>SlimesAndMarket</RootNamespace>
+        <TargetFramework>net4.8</TargetFramework>
+        <Version>1.4.0</Version>
+        <DebugType>embedded</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <LangVersion>preview</LangVersion>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Authors>AlchlcSystm, FrostDracony</Authors>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <Description>Sell slimes, just like their plorts!</Description>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <Configurations>Debug;Release</Configurations>
+        <!-- <Optimize>true</Optimize>  -->
+        <ImplicitUsings>true</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="Libs\*.dll" />
+        <PackageReference Include="Roslynator.Analyzers" Version="4.12.11" PrivateAssets="all" />
+        <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.12.11" PrivateAssets="all" />
+        <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.12.11" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
+        <EmbeddedResource Include="Resources\*" />
+    </ItemGroup>
 </Project>
