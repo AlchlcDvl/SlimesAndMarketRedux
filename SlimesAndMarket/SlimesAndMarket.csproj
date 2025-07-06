@@ -15,7 +15,7 @@
         <Description>Sell slimes, just like their plorts!</Description>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <Configurations>Debug;Release</Configurations>
-        <!-- <Optimize>true</Optimize>  -->
+        <!-- <Optimize>true</Optimize> -->
         <ImplicitUsings>true</ImplicitUsings>
     </PropertyGroup>
 
