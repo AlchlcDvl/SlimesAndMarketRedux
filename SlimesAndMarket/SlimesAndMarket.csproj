@@ -3,7 +3,7 @@
         <AssemblyName>SlimesAndMarket</AssemblyName>
         <RootNamespace>SlimesAndMarket</RootNamespace>
         <TargetFramework>net4.8</TargetFramework>
-        <Version>1.4.0</Version>
+        <Version>1.5.0</Version>
         <DebugType>embedded</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <LangVersion>preview</LangVersion>
@@ -21,10 +21,12 @@
 
     <ItemGroup>
         <Reference Include="..\Libs\*.dll" />
+
         <PackageReference Include="Roslynator.Analyzers" Version="4.12.11" PrivateAssets="all" />
         <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.12.11" PrivateAssets="all" />
         <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.12.11" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
+
         <EmbeddedResource Include="Resources\*" />
     </ItemGroup>
 </Project>
