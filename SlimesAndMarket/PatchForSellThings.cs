@@ -7,5 +7,5 @@ namespace SlimesAndMarket;
 [HarmonyPatch(typeof(PlortRegistry), nameof(PlortRegistry.RegisterPlort))]
 internal static class SkipKookadoba
 {
-    public static bool Prefix(Identifiable.Id id) => id != Identifiable.Id.KOOKADOBA_FRUIT;
+    public static bool Prefix(Identifiable.Id id) => id is not (Identifiable.Id.KOOKADOBA_FRUIT or Identifiable.Id.GINGER_VEGGIE);
 }

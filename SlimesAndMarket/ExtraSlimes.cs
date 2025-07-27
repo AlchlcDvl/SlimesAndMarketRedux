@@ -17,8 +17,7 @@ public static class ExtraSlimes
     public static void RegisterSlime
     (
         Identifiable.Id slimeId, Identifiable.Id plortId,
-        float multiplier = 4f,
-        float basePrice = 0f, float slimeSaturation = 0f,
+        float multiplier = 4f, float basePrice = 0f, float slimeSaturation = 0f,
         ProgressDirector.ProgressType[] progress = null
     )
     {
@@ -33,9 +32,14 @@ public static class ExtraSlimes
     }
 
     public static void SetSellable(Identifiable.Id itemId, float price, float saturation, ProgressDirector.ProgressType[] progress = null)
+        => SetSellable(itemId, price, saturation, true, progress);
+
+    internal static void SetSellable(Identifiable.Id itemId, float price, float saturation, bool registerToDrone, ProgressDirector.ProgressType[] progress)
     {
         PlortRegistry.AddEconomyEntry(itemId, price, saturation); // Create a market entry
         PlortRegistry.AddPlortEntry(itemId, progress ?? Main.AlreadyUnlocked); // Allow progress tracking
-        DroneRegistry.RegisterBasicTarget(itemId); // And make it so that the drones can grab time
+
+        if (registerToDrone)
+            DroneRegistry.RegisterBasicTarget(itemId); // And make it so that the drones can grab time
     }
 }

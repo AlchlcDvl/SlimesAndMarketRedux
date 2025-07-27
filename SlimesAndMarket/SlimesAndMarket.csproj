@@ -3,8 +3,8 @@
         <AssemblyName>SlimesAndMarket</AssemblyName>
         <RootNamespace>SlimesAndMarket</RootNamespace>
         <TargetFramework>net4.8</TargetFramework>
-        <Version>1.5.0</Version>
-        <DebugType>embedded</DebugType>
+        <Version>1.5.1</Version>
+        <DebugType>none</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <LangVersion>preview</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -15,8 +15,11 @@
         <Description>Sell slimes, just like their plorts!</Description>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <Configurations>Debug;Release</Configurations>
-        <!-- <Optimize>true</Optimize> -->
         <ImplicitUsings>true</ImplicitUsings>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$(Configuration)==Release">
+        <Optimize>true</Optimize>
     </PropertyGroup>
 
     <ItemGroup>

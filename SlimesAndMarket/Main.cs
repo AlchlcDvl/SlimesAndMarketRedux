@@ -65,8 +65,8 @@ internal sealed class Main : ModEntryPoint
         FOODS.ForEach(x => ExtraSlimes.SetSellable(x.Item1, x.Item2, x.Item3, x.Item4));
 
         var growableExists = SRModLoader.IsModPresent("kookagingergrow");
-        ExtraSlimes.SetSellable(Identifiable.Id.KOOKADOBA_FRUIT, growableExists ? 30f : 75f, 5f, [ProgressDirector.ProgressType.UNLOCK_OGDEN_MISSIONS]);
-        ExtraSlimes.SetSellable(Identifiable.Id.GINGER_VEGGIE, growableExists ? 75f : 200f, 5f, [ProgressDirector.ProgressType.UNLOCK_DESERT]);
+        ExtraSlimes.SetSellable(Identifiable.Id.KOOKADOBA_FRUIT, growableExists ? 30f : 75f, 5f, !growableExists, [ProgressDirector.ProgressType.UNLOCK_OGDEN_MISSIONS]);
+        ExtraSlimes.SetSellable(Identifiable.Id.GINGER_VEGGIE, growableExists ? 75f : 500f, 5f, !growableExists, [ProgressDirector.ProgressType.UNLOCK_DESERT]);
 
         // Only loading the special slime sales if relevant mods are enabled, because there would be no other way the player would be able to sell them otherwise
 
