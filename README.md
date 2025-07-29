@@ -60,11 +60,11 @@ if (SRModLoader.IsModPresent("slimesandmarket"))
 ```
 
 Where:
-`YourSlimeId` is the `Identifiable.Id` of your custom slime
-`YourSlimesPlortId` is the `Identifiable.Id` of your custom slime's plort (or enter 0 if you want to use a different base price)
-`Multiplier` is the factor of the base price
-`NonPlortBasePrice` is the other base price of your custom slime if it doesn't produce a plort or if you want its base price to not depend on its resulting plort
-`NonPlortSaturation` is the market saturation of your slime if wasn't dependent on the same value as its plort.
+`YourSlimeId` is the `Identifiable.Id` of your custom slime\
+`YourSlimesPlortId` is the `Identifiable.Id` of your custom slime's plort (or enter 0 if you want to use a different base price)\
+`Multiplier` is the factor of the base price\
+`NonPlortBasePrice` is the other base price of your custom slime if it doesn't produce a plort or if you want its base price to not depend on its resulting plort\
+`NonPlortSaturation` is the market saturation of your slime if wasn't dependent on the same value as its plort.\
 `ProgressToUnlock` is an array of `ProgressDirector.ProgressType` values to signal what progress the player should have reached for the market sale be unlocked (leave null to either always be unlocked or be unlocked the same time as their plort)
 
 ### Selling Modded Items
@@ -91,7 +91,7 @@ if (SRModLoader.IsModPresent("slimesandmarket"))
 ```
 
 Where:
-`YourItemId` is the `Identifiable.Id` of your custom slime
-`ItemPrice` is the base market price for your item
-`ItemSaturation` is the market saturation of your item
-`ProgressToUnlock` is an array of `ProgressDirector.ProgressType` values to signal what progress the player should have reached for the market sale be unlocked
+`YourItemId` is the `Identifiable.Id` of your custom item\
+`ItemPrice` is the base market price for your item\
+`ItemSaturation` is the market saturation of your item\
+`ProgressToUnlock` is an array of `ProgressDirector.ProgressType` values to signal what progress the player should have reached for the market sale be unlocked\
