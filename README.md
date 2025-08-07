@@ -61,7 +61,7 @@ if (SRModLoader.IsModPresent("slimesandmarket"))
 
 Where:
 `YourSlimeId` is the `Identifiable.Id` of your custom slime\
-`YourSlimesPlortId` is the `Identifiable.Id` of your custom slime's plort (or enter 0 if you want to use a different base price)\
+`YourSlimesPlortId` is the `Identifiable.Id` of your custom slime's plort (or enter 0 or leave the argument empty if you want to use a different base price)\
 `Multiplier` is the factor of the base price\
 `NonPlortBasePrice` is the other base price of your custom slime if it doesn't produce a plort or if you want its base price to not depend on its resulting plort\
 `NonPlortSaturation` is the market saturation of your slime if wasn't dependent on the same value as its plort.\
