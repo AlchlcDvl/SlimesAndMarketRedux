@@ -10,7 +10,7 @@ Just to make some things clear:
 5. Quicksilver slimes can only be sold if you have the [Quicksilver Rancher](https://www.nexusmods.com/slimerancher/mods/130) mod are are sold for 5 times their plort price
 6. This mod supports selling pure saber slimes using the [Pure Saber Slimes](https://www.nexusmods.com/slimerancher/mods/75) mod, which are sold for 50 times their plort price
 7. Glitch slimes can be sold using the [Glitch Rancher](https://www.nexusmods.com/slimerancher/mods/86) mod, which are sold for 10 times their plort price
-8. You can sell veggies and fruits
+8. You can sell veggies, fruits and slime science items
 
 ## For Developers
 
@@ -65,7 +65,9 @@ Where:
 `Multiplier` is the factor of the base price\
 `NonPlortBasePrice` is the other base price of your custom slime if it doesn't produce a plort or if you want its base price to not depend on its resulting plort\
 `NonPlortSaturation` is the market saturation of your slime if wasn't dependent on the same value as its plort.\
-`ProgressToUnlock` is an array of `ProgressDirector.ProgressType` values to signal what progress the player should have reached for the market sale be unlocked (leave null to either always be unlocked or be unlocked the same time as their plort)
+`ProgressToUnlock` is an array of `ProgressDirector.ProgressType` values to signal what progress the player should have reached for the market sale be unlocked (leave null to either always be unlocked or be unlocked the same time as their plort)\
+
+If you want your slime to be sold based on its plort price, ensure that the method is called *after* both your slime and plort have been created.
 
 ### Selling Modded Items
 
@@ -86,7 +88,7 @@ After that, after setting up all of your items use the following method for each
 ```cs
 if (SRModLoader.IsModPresent("slimesandmarket"))
 {
-    YourClass.SoftRegisterSlimeMarket(YourItemId, ItemPrice, ItemSaturation, ProgressToUnlock); // Repeat this for every item of yours
+    YourClass.SoftRegisterItemMarket(YourItemId, ItemPrice, ItemSaturation, ProgressToUnlock); // Repeat this for every item of yours
 }
 ```
 
@@ -94,4 +96,4 @@ Where:
 `YourItemId` is the `Identifiable.Id` of your custom item\
 `ItemPrice` is the base market price for your item\
 `ItemSaturation` is the market saturation of your item\
-`ProgressToUnlock` is an array of `ProgressDirector.ProgressType` values to signal what progress the player should have reached for the market sale be unlocked\
+`ProgressToUnlock` is an array of `ProgressDirector.ProgressType` values to signal what progress the player should have reached for the market sale be unlocked

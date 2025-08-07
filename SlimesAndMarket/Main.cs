@@ -11,7 +11,7 @@ internal sealed class Main : ModEntryPoint
 
     public static readonly ProgressDirector.ProgressType[] AlreadyUnlocked = [];
 
-    private static readonly List<(Identifiable.Id, Identifiable.Id, ProgressDirector.ProgressType[])> VANILLA_SLIMES =
+    private static readonly List<(Identifiable.Id SlimeId, Identifiable.Id PlortId, ProgressDirector.ProgressType[] Progress)> VANILLA_SLIMES =
     [
         (Identifiable.Id.PINK_SLIME, Identifiable.Id.PINK_PLORT, AlreadyUnlocked),
         (Identifiable.Id.TABBY_SLIME, Identifiable.Id.TABBY_PLORT, AlreadyUnlocked),
@@ -35,7 +35,7 @@ internal sealed class Main : ModEntryPoint
         (Identifiable.Id.PUDDLE_SLIME, Identifiable.Id.PUDDLE_PLORT, [ProgressDirector.ProgressType.UNLOCK_QUARRY, ProgressDirector.ProgressType.UNLOCK_MOSS]),
     ];
 
-    private static readonly List<(Identifiable.Id, float, float, ProgressDirector.ProgressType[])> FOODS =
+    private static readonly List<(Identifiable.Id ID, float Price, float Saturation, ProgressDirector.ProgressType[] Progress)> FOODS =
     [
         (Identifiable.Id.CARROT_VEGGIE, 2f, 5f, AlreadyUnlocked),
         (Identifiable.Id.OCAOCA_VEGGIE, 4f, 5f, [ProgressDirector.ProgressType.UNLOCK_QUARRY]),
@@ -61,8 +61,8 @@ internal sealed class Main : ModEntryPoint
 
     public override void Load()
     {
-        VANILLA_SLIMES.ForEach(x => ExtraSlimes.RegisterSlime(x.Item1, x.Item2, progress: x.Item3));
-        FOODS.ForEach(x => ExtraSlimes.SetSellable(x.Item1, x.Item2, x.Item3, x.Item4));
+        VANILLA_SLIMES.ForEach(x => ExtraSlimes.RegisterSlime(x.SlimeId, x.PlortId, progress: x.Progress));
+        FOODS.ForEach(x => ExtraSlimes.SetSellable(x.ID, x.Price, x.Saturation, x.Progress));
 
         var growableExists = SRModLoader.IsModPresent("kookagingergrow");
         ExtraSlimes.SetSellable(Identifiable.Id.KOOKADOBA_FRUIT, growableExists ? 30f : 75f, 5f, !growableExists, [ProgressDirector.ProgressType.UNLOCK_OGDEN_MISSIONS]);
@@ -84,5 +84,15 @@ internal sealed class Main : ModEntryPoint
 
         if (SRModLoader.IsModPresent("glitchrancher"))
             ExtraSlimes.RegisterSlime(Identifiable.Id.GLITCH_SLIME, Enum.TryParse<Identifiable.Id>("GLITCH_PLORT", out var plort) ? plort : 0, 10f, 60f, 10f, [ProgressDirector.ProgressType.ENTER_ZONE_SLIMULATION]);
+    }
+
+    public override void PostLoad()
+    {
+        // Delaying the addition of slimes and other non-plort items as sellable things so that plorts are always at the top
+        foreach (var (id, price, saturation, progress) in ExtraSlimes.SellableItems)
+        {
+            PlortRegistry.AddEconomyEntry(id, price, saturation); // Create a market entry
+            PlortRegistry.AddPlortEntry(id, progress); // Allow progress tracking
+        }
     }
 }
