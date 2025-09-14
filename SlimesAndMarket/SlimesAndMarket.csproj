@@ -2,8 +2,8 @@
     <PropertyGroup>
         <AssemblyName>SlimesAndMarket</AssemblyName>
         <RootNamespace>SlimesAndMarket</RootNamespace>
-        <TargetFramework>net4.8</TargetFramework>
-        <Version>1.5.3</Version>
+        <TargetFramework>net4.7.2</TargetFramework>
+        <Version>1.5.4</Version>
         <DebugType>none</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <LangVersion>preview</LangVersion>
