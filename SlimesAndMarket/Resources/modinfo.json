@@ -3,7 +3,7 @@
     "name": "Slimes and Market Redux",
     "author": "AlchlcSystm, FrostDracony (Former Developer)",
     "description": "A mod for Slime Rancher that allows you to sell all types of slimes! Credits to Atmudia (Discord: atmudia) for the amazing, original idea!",
-    "version": "1.5.4",
+    "version": "1.6.0",
     "load_after": ["komikspl_quicksilver_rancher", "puresaberslime", "more_vaccing", "glitchrancher", "kookagingergrow"],
     "load_before": ["sellthingsmod"]
 }

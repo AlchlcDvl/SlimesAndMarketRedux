@@ -27,7 +27,7 @@ To allow selling your own modded slimes you must do two things.
 Anywhere in your code, add the following code:
 
 ```cs
-public static void SoftRegisterSlimeMarket(Identifiable.Id slimeId, Identifiable.Id plortId, float multiplier = 4f, float basePrice = 0f, float slimeSaturation = 0f, ProgressDirector.ProgressType[] progress = null)
+public static void SoftRegisterSlimeMarket(Identifiable.Id slimeId, Identifiable.Id plortId = 0, float multiplier = 1f, float basePrice = 0f, float slimeSaturation = 0f, ProgressDirector.ProgressType[] progress = null)
 {
     try
     {
@@ -62,7 +62,7 @@ If you want your slime to be sold based on its plort price, ensure that the meth
 Similar to how you would sell modded slimes, anywhere in your code add the following code:
 
 ```cs
-public static void SoftRegisterItemMarket(Identifiable.Id itemId, float value, float saturation, ProgressDirector.ProgressType[] progress = null)
+public static void SoftRegisterItemMarket(Identifiable.Id itemId, float value, float saturation = 0f, ProgressDirector.ProgressType[] progress = null)
 {
     try
     {

@@ -1,12 +1,15 @@
 ﻿using SRML;
 using SRML.SR;
+using SConsole = SRML.Console.Console;
 using ProgressType = ProgressDirector.ProgressType;
 
 namespace SlimesAndMarket;
 
 internal sealed class Main : ModEntryPoint
 {
-    public static readonly ProgressType[] AlreadyUnlocked = [];
+    public static SConsole.ConsoleInstance Console;
+
+    private static readonly ProgressType[] AlreadyUnlocked = [];
 
     private static readonly List<(Identifiable.Id SlimeId, Identifiable.Id PlortId, ProgressType[] Progress)> VANILLA_SLIMES =
     [
@@ -47,42 +50,82 @@ internal sealed class Main : ModEntryPoint
         (Identifiable.Id.MANGO_FRUIT, 4f, [ProgressType.UNLOCK_MOSS]),
     ];
 
-    public override void PreLoad() => HarmonyInstance.PatchAll(typeof(Main).Assembly);
+    public override void PreLoad()
+    {
+        Console = ConsoleInstance;
+        HarmonyInstance.PatchAll(typeof(Main).Assembly);
+    }
 
     public override void Load()
     {
-        VANILLA_SLIMES.ForEach(x => MarketRegistry.RegisterSlime(x.SlimeId, x.PlortId, progress: x.Progress));
-        FOODS.ForEach(x => MarketRegistry.SetSellable(x.ID, x.Price, 0f, x.Progress));
+        if (Config.DO_NOT_REGISTER_ANYTHING)
+            return;
 
-        var growableExists = SRModLoader.IsModPresent("kookagingergrow");
-        MarketRegistry.SetSellable(Identifiable.Id.KOOKADOBA_FRUIT, growableExists ? 30f : 75f, !growableExists, 0f, [ProgressType.UNLOCK_OGDEN_MISSIONS]);
-        MarketRegistry.SetSellable(Identifiable.Id.GINGER_VEGGIE, growableExists ? 125f : 500f, !growableExists, growableExists ? 0f : 10000f, [ProgressType.UNLOCK_DESERT]);
-
-        // Only loading the special slime sales if relevant mods are enabled, because there would be no other way the player would be able to sell them otherwise
-
-        if (SRModLoader.IsModPresent("komikspl_quicksilver_rancher"))
-            MarketRegistry.RegisterSlime(Identifiable.Id.QUICKSILVER_SLIME, Identifiable.Id.QUICKSILVER_PLORT, 5f, 200f, 0f, [ProgressType.UNLOCK_MOCHI_MISSIONS]);
-
-        if (SRModLoader.IsModPresent("puresaberslime"))
-            MarketRegistry.RegisterSlime(Identifiable.Id.SABER_SLIME, Identifiable.Id.SABER_PLORT, 50f, progress: [ProgressType.UNLOCK_OGDEN_MISSIONS]);
-
-        if (SRModLoader.IsModPresent("more_vaccing"))
+        if (Config.REGISTER_SLIMES)
         {
-            MarketRegistry.RegisterSlime(Identifiable.Id.GOLD_SLIME, Identifiable.Id.GOLD_PLORT, 10f);
-            MarketRegistry.RegisterSlime(Identifiable.Id.LUCKY_SLIME, Enum.TryParse<Identifiable.Id>("LUCKY_PLORT", out var plort) ? plort : 0, 25f, 250f, 10000f);
+            VANILLA_SLIMES.ForEach(x => MarketRegistry.RegisterSlime(x.SlimeId, x.PlortId, 2.5f, progress: x.Progress));
+
+            // Only loading the special slime sales if relevant mods are enabled, because there would be no other way the player would be able to sell them otherwise
+
+            if (SRModLoader.IsModPresent("komikspl_quicksilver_rancher"))
+                MarketRegistry.RegisterSlime(Identifiable.Id.QUICKSILVER_SLIME, Identifiable.Id.QUICKSILVER_PLORT, 5f, 200f, 0f, [ProgressType.UNLOCK_MOCHI_MISSIONS]);
+
+            if (SRModLoader.IsModPresent("puresaberslime"))
+                MarketRegistry.RegisterSlime(Identifiable.Id.SABER_SLIME, Identifiable.Id.SABER_PLORT, 50f, progress: [ProgressType.UNLOCK_OGDEN_MISSIONS]);
+
+            if (SRModLoader.IsModPresent("more_vaccing"))
+            {
+                MarketRegistry.RegisterSlime(Identifiable.Id.GOLD_SLIME, Identifiable.Id.GOLD_PLORT, 10f);
+                MarketRegistry.RegisterSlime(Identifiable.Id.LUCKY_SLIME, Enum.TryParse<Identifiable.Id>("LUCKY_PLORT", out var plort) ? plort : 0, 25f, 250f, 10000f);
+            }
+
+            if (SRModLoader.IsModPresent("glitchrancher"))
+                MarketRegistry.RegisterSlime(Identifiable.Id.GLITCH_SLIME, Enum.TryParse<Identifiable.Id>("GLITCH_PLORT", out var plort) ? plort : 0, 10f, 60f, 0f, [ProgressType.UNLOCK_VIKTOR_MISSIONS]);
         }
 
-        if (SRModLoader.IsModPresent("glitchrancher"))
-            MarketRegistry.RegisterSlime(Identifiable.Id.GLITCH_SLIME, Enum.TryParse<Identifiable.Id>("GLITCH_PLORT", out var plort) ? plort : 0, 10f, 60f, 0f, [ProgressType.UNLOCK_VIKTOR_MISSIONS]);
+        if (!Config.REGISTER_FOODS)
+            return;
+
+        FOODS.ForEach(x => MarketRegistry.RegisterFood(x.ID, x.Price, 0f, x.Progress));
+
+        // Conditional sales based on what's there
+
+        var growableExists = SRModLoader.IsModPresent("kookagingergrow");
+        MarketRegistry.SetSellable(Identifiable.Id.KOOKADOBA_FRUIT, growableExists ? 30f : 75f, false, 0f, [ProgressType.UNLOCK_OGDEN_MISSIONS]);
+        MarketRegistry.SetSellable(Identifiable.Id.GINGER_VEGGIE, growableExists ? 125f : 500f, false, growableExists ? 0f : 10000f, [ProgressType.UNLOCK_DESERT]);
     }
 
     public override void PostLoad()
     {
+        if (Config.DO_NOT_REGISTER_ANYTHING)
+            return;
+
+        if (Config.REGISTER_LARGOS)
+        {
+            foreach (var largoId in Identifiable.LARGO_CLASS)
+                MarketRegistry.RegisterLargo(largoId);
+        }
+
+        if (Config.REGISTER_TARRS)
+        {
+            MarketRegistry.RegisterTarr(Identifiable.Id.TARR_SLIME);
+
+            if (SRModLoader.IsModPresent("glitchrancher"))
+                MarketRegistry.RegisterTarr(Identifiable.Id.GLITCH_TARR_SLIME, 1.5f, [ProgressType.UNLOCK_VIKTOR_MISSIONS]);
+
+            var count = PlortRegistry.valueMapsToPatch.Count + SceneContext.Instance.EconomyDirector.baseValueMap.Length + MarketRegistry.SellableItems.Count + MarketRegistry.SellableTarrs.Count;
+            var sum = PlortRegistry.valueMapsToPatch.Sum(x => x.value) + SceneContext.Instance.EconomyDirector.baseValueMap.Sum(x => x.value) + MarketRegistry.SellableItems.Sum(x => x.Item2);
+            var avg = sum / count;
+
+            foreach (var (tarr, multiplier, progress) in MarketRegistry.SellableTarrs)
+                MarketRegistry.RegisterSlime(tarr, 0, multiplier, avg, 0f, progress);
+        }
+
         // Delaying the addition of slimes and other non-plort items as sellable things so that plorts are always at the top
         foreach (var (id, price, saturation, progress) in MarketRegistry.SellableItems)
         {
             PlortRegistry.AddEconomyEntry(id, price, saturation); // Create a market entry
-            PlortRegistry.AddPlortEntry(id, progress); // Allow progress tracking
+            PlortRegistry.AddPlortEntry(id, progress ?? AlreadyUnlocked); // Allow progress tracking
         }
     }
 }
