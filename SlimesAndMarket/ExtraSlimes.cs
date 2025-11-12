@@ -44,6 +44,7 @@ public static class MarketRegistry
 {
     internal static readonly List<(Identifiable.Id, float, float, ProgressDirector.ProgressType[])> SellableItems = [];
     internal static readonly List<(Identifiable.Id, float, ProgressDirector.ProgressType[])> SellableTarrs = [];
+
     internal static readonly HashSet<string> FoodSuffixes = ["_VEGGIE", "_HEN", "_FRUIT"];
 
     private static readonly HashSet<Identifiable.Id> AlreadyRegistered = new(Identifiable.idComparer);
@@ -166,7 +167,7 @@ public static class MarketRegistry
         if (!Config.REGISTER_TARRS)
             return;
 
-        if (!AlreadyRegistered.Contains(tarrId))
+        if (AlreadyRegistered.Contains(tarrId))
         {
             Main.Console.LogError($"{tarrId} is already registered!");
             return;
