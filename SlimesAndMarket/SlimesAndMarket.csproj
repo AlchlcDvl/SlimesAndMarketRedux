@@ -3,7 +3,7 @@
         <AssemblyName>SlimesAndMarket</AssemblyName>
         <RootNamespace>SlimesAndMarket</RootNamespace>
         <TargetFramework>net4.7.2</TargetFramework>
-        <Version>1.6.0</Version>
+        <Version>1.6.1</Version>
         <DebugType>none</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <LangVersion>preview</LangVersion>
@@ -31,7 +31,6 @@
 
         <PackageReference Include="Krafs.Publicizer" Version="2.3.0" PrivateAssets="all" />
         <PackageReference Include="Roslynator.Analyzers" Version="4.12.11" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
         <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.12.11" PrivateAssets="all" />
         <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.12.11" PrivateAssets="all" />
 

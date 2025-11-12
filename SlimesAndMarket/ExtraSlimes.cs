@@ -129,7 +129,7 @@ public static class MarketRegistry
     /// <param name="price">The base price of the item.</param>
     /// <param name="saturation">The market saturation of the item. Defaults to <c>0f</c> to enable saturation calculation.</param>
     /// <param name="progress">How much progress must the player have reached to unlock the sale on the market UI. Defaults to <c>null</c> indicating already unlocked.</param>
-    [Obsolete("Prefer using the other RegisterX methods instead, as this one is not influenced by configs")]
+    [Obsolete("Prefer using the other RegisterX methods instead, as this one is not influenced by configs.")]
     public static void SetSellable(Identifiable.Id itemId, float price, float saturation = 0f, ProgressDirector.ProgressType[] progress = null)
         => SetSellable(itemId, price, false, saturation, progress);
 
