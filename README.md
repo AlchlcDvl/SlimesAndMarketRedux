@@ -3,85 +3,77 @@ A mod for Slime Rancher 1 that allows you to sell slimes, just like their plorts
 
 ## Info
 Just to make some things clear:
-1. You can sell most types of vanilla slimes normally (exceptions are glitch, gold, lucky, saber and quicksilver slimes; all of which require specific mods, see later in the list)
-2. You cannot sell tarr or largo slimes (I might add them though if there's enough demand for it)
-3. Slime sale profits are two and a half times as much as their plort sales (aka 2.5 x Plort Price)
-4. Gold and lucky slimes can only be sold if you have the [More Vaccables](https://www.nexusmods.com/slimerancher/mods/4) mod are are sold for 10 times their plort price, lucky slimes are sold for 1250, or 5 times their plort price if you have the lucky plorts enabled, newbucks
-5. Quicksilver slimes can only be sold if you have the [Quicksilver Rancher](https://www.nexusmods.com/slimerancher/mods/130) mod are are sold for 5 times their plort price
-6. This mod supports selling pure saber slimes using the [Pure Saber Slimes](https://www.nexusmods.com/slimerancher/mods/75) mod, which are sold for 50 times their plort price
-7. Glitch slimes can be sold using the [Glitch Rancher](https://www.nexusmods.com/slimerancher/mods/86) mod, which are sold for 10 times their plort price
-8. You can sell veggies, fruits and slime science items
+1. You can sell most types of vanilla slimes normally (exceptions are glitch, gold, lucky, saber and quicksilver slimes; all of which require specific mods, see later in the list).
+2. You can sell tarr slimes (prices are averaged from the current economy) and largo slimes (calculated based on their components).
+3. Slime sale profits are **2.5x** their plort sales (e.g., Pink Slime Price = 2.5 * Pink Plort Price).
+4. **Gold and Lucky Slimes:** Can only be sold if you have the [More Vaccables](https://www.nexusmods.com/slimerancher/mods/4) mod.
+    * **Gold Slimes:** Sold for **10x** their plort price.
+    * **Lucky Slimes:** Sold for **5x** their plort price (approx. 1250 Newbucks if plorts are disabled).
+5. **Quicksilver Slimes:** Can only be sold if you have the [Quicksilver Rancher](https://www.nexusmods.com/slimerancher/mods/130) mod. Sold for **5x** their plort price.
+6. **Saber Slimes:** Supports selling pure saber slimes using the [Pure Saber Slimes](https://www.nexusmods.com/slimerancher/mods/75) mod. Sold for **50x** their plort price.
+7. **Glitch Slimes:** Can be sold using the [Glitch Rancher](https://www.nexusmods.com/slimerancher/mods/86) mod. Sold for **10x** their plort price.
+8. You can also sell veggies, fruits, slime science items, and other item groups if enabled in the config.
 
 ## For Developers
 
 ### Compatibility & Selling
-To allow selling anything from your mod, add the mod's dll file to your list of dependencies (be it a `Libs` folder or configurations).
+To allow selling items from your mod via the Plort Market, you must add `SlimesAndMarket.dll` as a reference in your project dependencies.
 
-This way you can use the mod's code in your code and allow your mod to compile properly.
-
-For subsequent sections, using `SRModLoader.IsModPresent("slimesandmarket")` ensures that it runs only if the mod is there in your mods folder.
+**Note:** You should check `SRModLoader.IsModPresent("slimesandmarket")` before running any registration code to prevent crashes if the user does not have this mod installed.
 
 ### Selling Modded Slimes
-To allow selling your own modded slimes you must do two things.
-
-Anywhere in your code, add the following code:
+To allow selling your own modded slimes, add a wrapper method to your code to safely access the registry:
 
 ```cs
-public static void SoftRegisterSlimeMarket(Identifiable.Id slimeId, Identifiable.Id plortId = 0, float multiplier = 1f, float basePrice = 0f, float slimeSaturation = 0f, ProgressDirector.ProgressType[] progress = null)
+public static void RegisterSlimeForMarket(Identifiable.Id slimeId, Identifiable.Id plortId = Identifiable.Id.NONE, float multiplier = 1f, float basePrice = 0f, float slimeSaturation = 0f, ProgressDirector.ProgressType[] progress = null)
 {
-    try
-    {
-        SlimesAndMarket.MarketRegistry.RegisterSlime(slimeId, plortId, multiplier, basePrice, slimeSaturation, progress);
-    } catch {}
+    SlimesAndMarket.MarketRegistry.RegisterSlime(slimeId, plortId, multiplier, basePrice, slimeSaturation, progress);
 }
 ```
-
-This is to avoid making your mod dependent on this one.
-
-After that, after setting up all of your slimes use the following method for each slime (add the mod's dll to the list of dependencies to allow the mod to compile):
-
+Then, in your `Load()` method use the above like this:
 ```cs
 if (SRModLoader.IsModPresent("slimesandmarket"))
 {
-    YourClass.SoftRegisterSlimeMarket(YourSlimeId, YourSlimesPlortId, Multiplier, NonPlortBasePrice, NonPlortSaturation, ProgressToUnlock); // Repeat this for every slime of yours
+    // Example: Registering a custom slime
+    RegisterSlimeForMarket(
+        MyMod.MySlimeId,
+        MyMod.MyPlortId,
+        2.5f, // Multiplier
+        0f,   // Base Price (0 to use Plort value)
+        0f,   // Saturation (0 to calculate automatically)
+        null  // Progress (null to inherit from Plort)
+    );
 }
 ```
+**Parameters:**
+- **slimeId:** The Identifiable.Id of your custom slime.
+- **plortId:** The Identifiable.Id of your slime's plort.
+- **multiplier:** The multiplier applied to the base value (e.g., 2.5f).
+- **basePrice:** Explicit price. Set to 0f to calculate price based on the plortId value.
+- **slimeSaturation:** Explicit saturation. Set to 0f to calculate automatically.
+- **progress:** Unlock conditions. Leave null to unlock automatically when the plort is unlocked.
 
-Where:
-`YourSlimeId` is the `Identifiable.Id` of your custom slime\
-`YourSlimesPlortId` is the `Identifiable.Id` of your custom slime's plort (or enter 0 or leave the argument empty if you want to use a different base price)\
-`Multiplier` is the factor of the base price\
-`NonPlortBasePrice` is the other base price of your custom slime if it doesn't produce a plort or if you want its base price to not depend on its resulting plort\
-`NonPlortSaturation` is the market saturation of your slime if wasn't dependent on the same value as its plort.\
-`ProgressToUnlock` is an array of `ProgressDirector.ProgressType` values to signal what progress the player should have reached for the market sale be unlocked (leave null to either always be unlocked or be unlocked the same time as their plort)\
+### Selling Modded Items (Foods/Resources)
+To register items other than slimes (like custom foods or resources), use RegisterFood or RegisterItem.
 
-If you want your slime to be sold based on its plort price, ensure that the method is called *after* both your slime and plort have been created, otherwise just after your slime's creation instead.
-
-### Selling Modded Items
-
-Similar to how you would sell modded slimes, anywhere in your code add the following code:
-
+Wrapper Example:
 ```cs
-public static void SoftRegisterItemMarket(Identifiable.Id itemId, float value, float saturation = 0f, ProgressDirector.ProgressType[] progress = null)
+public static void RegisterFoodForMarket(Identifiable.Id itemId, float price, float saturation, ProgressDirector.ProgressType[] progress = null)
 {
-    try
-    {
-        SlimesAndMarket.ExtraSlimes.SetSellable(itemId, value, saturation, progress);
-    } catch {}
+    SlimesAndMarket.MarketRegistry.RegisterFood(itemId, price, saturation, progress);
 }
 ```
 
-After that, after setting up all of your items use the following method for each item:
-
+Usage:
 ```cs
 if (SRModLoader.IsModPresent("slimesandmarket"))
 {
-    YourClass.SoftRegisterItemMarket(YourItemId, ItemPrice, ItemSaturation, ProgressToUnlock); // Repeat this for every item of yours
+    RegisterFoodForMarket(MyMod.MyCustomVeggieId, 15f, 10f);
 }
 ```
 
-Where:
-`YourItemId` is the `Identifiable.Id` of your custom item\
-`ItemPrice` is the base market price for your item\
-`ItemSaturation` is the market saturation of your item\
-`ProgressToUnlock` is an array of `ProgressDirector.ProgressType` values to signal what progress the player should have reached for the market sale be unlocked
+**Parameters:**
+- **itemId:** The Identifiable.Id of your custom item.
+- **price:** Explicit price.
+- **saturation:** Explicit saturation. Set to 0f to calculate automatically.
+- **progress:** Unlock conditions. Leave null to unlock automatically when the game starts.

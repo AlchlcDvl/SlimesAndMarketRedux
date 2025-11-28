@@ -11,7 +11,7 @@ internal sealed class Main : ModEntryPoint
 
     private static readonly ProgressType[] AlreadyUnlocked = [];
 
-    private static readonly List<(Identifiable.Id SlimeId, Identifiable.Id PlortId, ProgressType[] Progress)> VANILLA_SLIMES =
+    private static readonly List<(Identifiable.Id, Identifiable.Id, ProgressType[])> VANILLA_SLIMES =
     [
         (Identifiable.Id.PINK_SLIME, Identifiable.Id.PINK_PLORT, AlreadyUnlocked),
         (Identifiable.Id.TABBY_SLIME, Identifiable.Id.TABBY_PLORT, AlreadyUnlocked),
@@ -35,7 +35,7 @@ internal sealed class Main : ModEntryPoint
         (Identifiable.Id.PUDDLE_SLIME, Identifiable.Id.PUDDLE_PLORT, [ProgressType.UNLOCK_QUARRY, ProgressType.UNLOCK_MOSS]),
     ];
 
-    private static readonly List<(Identifiable.Id ID, float Price, ProgressType[] Progress)> FOODS =
+    private static readonly List<(Identifiable.Id, float, ProgressType[])> FOODS =
     [
         (Identifiable.Id.CARROT_VEGGIE, 2f, AlreadyUnlocked),
         (Identifiable.Id.OCAOCA_VEGGIE, 4f, [ProgressType.UNLOCK_QUARRY]),
@@ -63,7 +63,8 @@ internal sealed class Main : ModEntryPoint
 
         if (Config.REGISTER_SLIMES)
         {
-            VANILLA_SLIMES.ForEach(x => MarketRegistry.RegisterSlime(x.SlimeId, x.PlortId, 2.5f, progress: x.Progress));
+            foreach (var (slimeId, plortId, progress) in VANILLA_SLIMES)
+                MarketRegistry.RegisterSlime(slimeId, plortId, 2.5f, progress: progress);
 
             // Only loading the special slime sales if relevant mods are enabled, because there would be no other way the player would be able to sell them otherwise
 
@@ -75,8 +76,9 @@ internal sealed class Main : ModEntryPoint
 
             if (SRModLoader.IsModPresent("more_vaccing"))
             {
+                var luckyExists = Enum.TryParse<Identifiable.Id>("LUCKY_PLORT", out var plort);
+                MarketRegistry.RegisterSlime(Identifiable.Id.LUCKY_SLIME, luckyExists ? plort : 0, 5f, luckyExists ? 0f : 250f, luckyExists ? 0f : 10000f);
                 MarketRegistry.RegisterSlime(Identifiable.Id.GOLD_SLIME, Identifiable.Id.GOLD_PLORT, 10f);
-                MarketRegistry.RegisterSlime(Identifiable.Id.LUCKY_SLIME, Enum.TryParse<Identifiable.Id>("LUCKY_PLORT", out var plort) ? plort : 0, 25f, 250f, 10000f);
             }
 
             if (SRModLoader.IsModPresent("glitchrancher"))
@@ -86,7 +88,8 @@ internal sealed class Main : ModEntryPoint
         if (!Config.REGISTER_FOODS)
             return;
 
-        FOODS.ForEach(x => MarketRegistry.RegisterFood(x.ID, x.Price, 0f, x.Progress));
+        foreach (var (id, price, progress) in FOODS)
+            MarketRegistry.RegisterFood(id, price, 0f, progress);
 
         // Conditional sales based on what's there
 
@@ -113,7 +116,7 @@ internal sealed class Main : ModEntryPoint
             if (SRModLoader.IsModPresent("glitchrancher"))
                 MarketRegistry.RegisterTarr(Identifiable.Id.GLITCH_TARR_SLIME, 1.5f, [ProgressType.UNLOCK_VIKTOR_MISSIONS]);
 
-            var count = PlortRegistry.valueMapsToPatch.Count + SceneContext.Instance.EconomyDirector.baseValueMap.Length + MarketRegistry.SellableItems.Count + MarketRegistry.SellableTarrs.Count;
+            var count = PlortRegistry.valueMapsToPatch.Count + SceneContext.Instance.EconomyDirector.baseValueMap.Length + MarketRegistry.SellableItems.Count;
             var sum = PlortRegistry.valueMapsToPatch.Sum(x => x.value) + SceneContext.Instance.EconomyDirector.baseValueMap.Sum(x => x.value) + MarketRegistry.SellableItems.Sum(x => x.Item2);
             var avg = sum / count;
 

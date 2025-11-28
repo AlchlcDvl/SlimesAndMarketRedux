@@ -51,16 +51,38 @@ public static class MarketRegistry
 
     private static (float, float) GetValueMap(Identifiable.Id id, float price = 0f, float saturation = 0f)
     {
-        // Everything that can be sold
-        var func = new Predicate<EconomyDirector.ValueMap>(Predicate);
-        var value = Array.Find(SceneContext.Instance.EconomyDirector.baseValueMap, func) ?? PlortRegistry.valueMapsToPatch.Find(func);
+        // Everything that can be sold// Helper local function to search a collection without delegates
+
+        // Search vanilla map first, then modded registry
+        var value = FindIn(SceneContext.Instance.EconomyDirector.baseValueMap) ?? FindIn(PlortRegistry.valueMapsToPatch);
 
         return ((value?.value ?? 0) > 0f ? value.value : price, (value?.fullSaturation ?? 0) > 0f ? value.fullSaturation : saturation);
 
-        bool Predicate(EconomyDirector.ValueMap x) => x.accept.id == id;
+        EconomyDirector.ValueMap FindIn(IEnumerable<EconomyDirector.ValueMap> collection)
+        {
+            if (collection == null)
+                return null;
+
+            foreach (var map in collection)
+            {
+                if (map.accept.id == id)
+                    return map;
+            }
+
+            return null;
+        }
     }
 
-    private static MarketUI.PlortEntry GetPlortEntry(Identifiable.Id id) => PlortRegistry.plortsToPatch.Find(x => x.id == id);
+    private static MarketUI.PlortEntry GetPlortEntry(Identifiable.Id id)
+    {
+        foreach (var entry in PlortRegistry.plortsToPatch)
+        {
+            if (entry.id == id)
+                return entry;
+        }
+
+        return null;
+    }
 
     /// <summary>
     /// Registers a slime to the plort market.
@@ -200,6 +222,12 @@ public static class MarketRegistry
         // Split and assign name parts
         var parts = largoId.ToString().Split('_');
 
+        if (parts.Length != 2)
+        {
+            Main.Console.LogError($"{largoId} has invalid naming convention!");
+            return;
+        }
+
         var name1 = parts[0];
         var name2 = parts[1];
 
@@ -209,26 +237,35 @@ public static class MarketRegistry
             var (price1, result1) = FindValues(name1);
             var (price2, result2) = FindValues(name2);
 
-            float multiplier;
-
-            if (result1 == result2)
-                multiplier = FindMultiplierForDouble(result1);
+            if (result1 == FindResult.Neither && result2 == FindResult.Neither)
+            {
+                Main.Console.LogWarning($"Could not calculate price for {largoId}: components not found.");
+                price = 10f;
+            }
             else
             {
-                if (result1 == FindResult.Plort)
-                    price1 *= 2.5f;
-                else if (result1 == FindResult.Neither)
-                    price2 *= 2f;
+                float multiplier;
 
-                if (result2 == FindResult.Plort)
-                    price2 *= 2.5f;
-                else if (result2 == FindResult.Neither)
-                    price1 *= 2f;
+                if (result1 == result2)
+                    multiplier = FindMultiplierForDouble(result1);
+                else
+                {
+                    // Weight shifting to ensure best parity
+                    if (result1 == FindResult.Plort)
+                        price1 *= 2.5f;
+                    else if (result1 == FindResult.Neither)
+                        price2 *= 2f;
 
-                multiplier = 0.9f;
+                    if (result2 == FindResult.Plort)
+                        price2 *= 2.5f;
+                    else if (result2 == FindResult.Neither)
+                        price1 *= 2f;
+
+                    multiplier = 0.9f;
+                }
+
+                price = (price1 + price2) * multiplier;
             }
-
-            price = (price1 + price2) * multiplier;
         }
 
         SetSellable(largoId, price, true, saturation, progress ?? CalculateProgress(name1, name2)); // Allow selling the largo
@@ -236,20 +273,24 @@ public static class MarketRegistry
 
     private static (float, FindResult) FindValues(string name)
     {
-        var (foundPrice, _) = GetValueMap(Parse<Identifiable.Id>(name + "_SLIME"));
+        if (Enum.TryParse<Identifiable.Id>(name + "_SLIME", out var slime))
+        {
+            var (foundPrice, _) = GetValueMap(slime);
 
-        if (foundPrice > 0f)
-            return (foundPrice, FindResult.Slime);
+            if (foundPrice > 0f)
+                return (foundPrice, FindResult.Slime);
+        }
 
-        (foundPrice, _) = GetValueMap(Parse<Identifiable.Id>(name + "_PLORT"));
+        if (Enum.TryParse<Identifiable.Id>(name + "_PLORT", out var plort))
+        {
+            var (foundPrice, _) = GetValueMap(plort);
 
-        if (foundPrice > 0f)
-            return (foundPrice, FindResult.Plort);
+            if (foundPrice > 0f)
+                return (foundPrice, FindResult.Plort);
+        }
 
         return (0f, FindResult.Neither);
     }
-
-    private static T Parse<T>(string name) where T : struct, Enum => (T)Enum.Parse(typeof(T), name);
 
     private static float FindMultiplierForDouble(FindResult result) => result switch
     {
@@ -260,9 +301,9 @@ public static class MarketRegistry
 
     private static ProgressDirector.ProgressType[] CalculateProgress(string name1, string name2)
     {
-        var plort1 = GetPlortEntry(Parse<Identifiable.Id>(name1 + "_PLORT"))?.toUnlock ?? [];
-        var plort2 = GetPlortEntry(Parse<Identifiable.Id>(name2 + "_PLORT"))?.toUnlock ?? [];
-        return [.. plort1, .. plort2];
+        var plort1Unlock = Enum.TryParse<Identifiable.Id>(name1 + "_PLORT", out var plort1) ? GetPlortEntry(plort1)?.toUnlock : null;
+        var plort2Unlock = Enum.TryParse<Identifiable.Id>(name2 + "_PLORT", out var plort2) ? GetPlortEntry(plort2)?.toUnlock : null;
+        return [.. plort1Unlock ?? [], .. plort2Unlock ?? []];
     }
 
     private enum FindResult

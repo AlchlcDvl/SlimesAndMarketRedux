@@ -3,7 +3,7 @@
         <AssemblyName>SlimesAndMarket</AssemblyName>
         <RootNamespace>SlimesAndMarket</RootNamespace>
         <TargetFramework>net4.7.2</TargetFramework>
-        <Version>1.6.1</Version>
+        <Version>1.6.2</Version>
         <DebugType>none</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <LangVersion>preview</LangVersion>
