@@ -222,7 +222,7 @@ public static class MarketRegistry
         // Split and assign name parts
         var parts = largoId.ToString().Split('_');
 
-        if (parts.Length != 2)
+        if (parts.Length != 3 || parts[2] != "LARGO")
         {
             Main.Console.LogError($"{largoId} has invalid naming convention!");
             return;
